@@ -2,6 +2,8 @@ SWIFT ?= swift
 XCODEBUILD ?= xcodebuild
 DERIVED_DATA ?= .build/xcode
 
+DEVELOPMENT_TEAM ?= WAVU44HS32
+
 .PHONY: build test xcode-build archive lint preview providers install
 
 build:
@@ -19,9 +21,14 @@ xcode-build:
 	fi
 
 archive:
-	$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Release -derivedDataPath $(DERIVED_DATA) -archivePath $(DERIVED_DATA)/PreviewX.xcarchive archive
+	@if [ -n "$$DEVELOPMENT_TEAM" ]; then \
+		$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Release -derivedDataPath $(DERIVED_DATA) -archivePath $(DERIVED_DATA)/PreviewX.xcarchive DEVELOPMENT_TEAM="$$DEVELOPMENT_TEAM" archive; \
+	else \
+		$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Release -derivedDataPath $(DERIVED_DATA) -archivePath $(DERIVED_DATA)/PreviewX.xcarchive archive; \
+	fi
 
 install: xcode-build
+	killall PreviewX || true
 	pkill -9 -f PreviewXQuickLook || true
 	killall QuickLookUIService || true
 	rm -rf /Applications/PreviewX.app
