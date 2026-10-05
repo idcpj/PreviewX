@@ -88,6 +88,8 @@ public enum L10n {
         case featureZeroDep
         case featureSafe
         case searchFormats
+        case expandAll
+        case collapse
 
         // Diagnostics
         case durationMs
@@ -216,23 +218,23 @@ public enum L10n {
         case .catCode:
             return isZh ? "源码与脚本" : "Source Code & Scripts"
         case .catCodeDesc:
-            return isZh ? "Swift, Python, TypeScript, Go, Rust, C/C++ 等 30+ 种主流语言语法高亮与行号导航" : "30+ programming languages with syntax highlighting and line numbers"
+            return isZh ? "Swift, Python, TypeScript, Go, Rust, C/C++, Vue, Svelte 等 40+ 种主流语言语法高亮与行号导航" : "40+ programming languages (Swift, Python, TypeScript, Rust, Vue, etc.) with syntax highlighting & line navigation"
         case .catStructured:
             return isZh ? "结构化数据" : "Structured Data"
         case .catStructuredDesc:
-            return isZh ? "JSON, XML, YAML, TOML 格式化排版 (Pretty-Print)，CSV/TSV 数据表格预览" : "Pretty-printed JSON, XML, YAML, TOML, and tabular view for CSV/TSV"
+            return isZh ? "JSON/JSON5, XML, YAML, TOML, SVG, Plist 格式化排版，CSV/TSV 数据表格预览" : "Pretty-printed JSON/JSON5, XML, YAML, TOML, SVG, Plist, and CSV/TSV table preview"
         case .catArchives:
             return isZh ? "压缩归档" : "Archives & Packages"
         case .catArchivesDesc:
-            return isZh ? "ZIP, TAR, GZ, 7Z 等目录树形浏览与安全路径穿越校验" : "Hierarchical directory tree inspection and path traversal security checks"
+            return isZh ? "ZIP, TAR, GZ, 7Z, JAR, WAR, APK 等目录树形浏览与安全路径穿越校验" : "Hierarchical directory tree inspection and security checks for ZIP, TAR, 7Z, JAR, APK, etc."
         case .catDocs:
             return isZh ? "文档与日志" : "Docs & Logs"
         case .catDocsDesc:
-            return isZh ? "Markdown 结构化标题渲染，系统与运行日志等级高亮" : "Rich Markdown rendering, system & application logs with severity colors"
+            return isZh ? "Markdown 结构化大纲渲染，纯文本、配置与系统运行日志等级高亮" : "Markdown outline rendering, plain text, dotfiles, and system logs with severity colors"
         case .catDatabase:
             return isZh ? "数据库与二进制" : "Database & Binary"
         case .catDatabaseDesc:
-            return isZh ? "SQLite 数据库表结构与元数据解析，通用二进制头部安全检视" : "SQLite database schemas inspection, safe binary header inspection"
+            return isZh ? "SQLite 数据库表结构与元数据解析，WebAssembly 与通用二进制头部安全检视" : "SQLite database schemas inspection, WebAssembly and binary header safe inspection"
         case .dropzoneTitle:
             return isZh ? "极速预览工作台" : "Instant Quick Look"
         case .dropzoneSubtitle:
@@ -247,6 +249,10 @@ public enum L10n {
             return isZh ? "纯只读 · 杜绝代码执行" : "Read-Only · Never Executes Code"
         case .searchFormats:
             return isZh ? "搜索格式或扩展名..." : "Search formats or extensions..."
+        case .expandAll:
+            return isZh ? "展开全部" : "Expand All"
+        case .collapse:
+            return isZh ? "收起" : "Collapse"
 
         // Diagnostics
         case .durationMs:

@@ -125,6 +125,16 @@ public enum PreviewXPaths {
     }
 
     public static func supportDirectory() -> URL {
+        if let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) {
+            let directory = groupURL.appendingPathComponent("Library/Application Support/PreviewX", isDirectory: true)
+            try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            return directory
+        }
+        if let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+            let directory = appSupport.appendingPathComponent("PreviewX", isDirectory: true)
+            try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            return directory
+        }
         let directory = realHomeDirectory()
             .appendingPathComponent("Library/Application Support/PreviewX", isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

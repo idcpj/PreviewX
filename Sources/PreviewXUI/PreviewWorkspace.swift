@@ -355,6 +355,7 @@ private struct FormatsAndRulesPane: View {
                     FormatCategoryRow(
                         category: cat,
                         model: model,
+                        searchText: searchText,
                         isMatch: searchText.isEmpty || cat.matches(searchText)
                     )
                 }
@@ -369,7 +370,48 @@ private struct FormatsAndRulesPane: View {
     }
 }
 
-private struct FormatCategory: Identifiable {
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 6
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? .infinity
+        var currentX: CGFloat = 0
+        var currentY: CGFloat = 0
+        var lineHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if currentX + size.width > width, currentX > 0 {
+                currentX = 0
+                currentY += lineHeight + spacing
+                lineHeight = 0
+            }
+            lineHeight = max(lineHeight, size.height)
+            currentX += size.width + spacing
+        }
+        return CGSize(width: width, height: currentY + lineHeight)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var currentX = bounds.minX
+        var currentY = bounds.minY
+        var lineHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if currentX + size.width > bounds.maxX, currentX > bounds.minX {
+                currentX = bounds.minX
+                currentY += lineHeight + spacing
+                lineHeight = 0
+            }
+            subview.place(at: CGPoint(x: currentX, y: currentY), proposal: .unspecified)
+            lineHeight = max(lineHeight, size.height)
+            currentX += size.width + spacing
+        }
+    }
+}
+
+struct FormatCategory: Identifiable {
     let id: String
     let title: String
     let description: String
@@ -379,9 +421,14 @@ private struct FormatCategory: Identifiable {
     let sampleExtensions: [String]
 
     func matches(_ query: String) -> Bool {
-        let q = query.lowercased()
+        let q = query.lowercased().trimmingCharacters(in: .whitespaces)
+        if q.isEmpty { return true }
         if title.lowercased().contains(q) || description.lowercased().contains(q) { return true }
-        return sampleExtensions.contains { $0.lowercased().contains(q) }
+        let cleanQuery = q.hasPrefix(".") ? String(q.dropFirst()) : q
+        return sampleExtensions.contains { ext in
+            let lower = ext.lowercased()
+            return lower.contains(cleanQuery) || ext.localizedCaseInsensitiveContains(q)
+        }
     }
 
     static func makeCategories(language: PreviewXSettings.Language) -> [FormatCategory] {
@@ -393,7 +440,17 @@ private struct FormatCategory: Identifiable {
                 icon: "chevron.left.forwardslash.chevron.right",
                 color: .blue,
                 providerIDs: ["com.previewx.code"],
-                sampleExtensions: ["swift", "py", "ts", "js", "go", "rs", "cpp", "c", "h", "java", "kt", "sh", "html", "css", "sql", "php"]
+                sampleExtensions: [
+                    "swift", "py", "pyw", "ts", "tsx", "js", "jsx", "mjs", "cjs",
+                    "go", "rs", "cpp", "c", "h", "hpp", "cc", "cxx", "m", "mm",
+                    "java", "kt", "kts", "cs", "dart", "rb", "rbw", "php",
+                    "sh", "bash", "zsh", "fish", "ps1", "bat", "cmd",
+                    "html", "htm", "css", "scss", "sass", "less",
+                    "vue", "svelte", "sql", "graphql", "proto",
+                    "cmake", "CMakeLists.txt", "Dockerfile", "Makefile", "mk",
+                    "diff", "patch", "ini", "cfg", "conf", ".env", "lock",
+                    "lua", "pl", "r", "scala", "hs", "ex", "erl", "clj", "groovy", "gradle"
+                ]
             ),
             FormatCategory(
                 id: "structured",
@@ -402,7 +459,12 @@ private struct FormatCategory: Identifiable {
                 icon: "tablecells.badge.ellipsis",
                 color: .orange,
                 providerIDs: ["com.previewx.json", "com.previewx.xml", "com.previewx.yaml", "com.previewx.toml", "com.previewx.csv"],
-                sampleExtensions: ["json", "json5", "xml", "yaml", "yml", "toml", "csv", "tsv"]
+                sampleExtensions: [
+                    "json", "json5", "jsonc", "geojson", "har", "jsonl", "ndjson",
+                    "yaml", "yml", "toml",
+                    "xml", "xsd", "svg", "plist",
+                    "csv", "tsv"
+                ]
             ),
             FormatCategory(
                 id: "archive",
@@ -411,7 +473,10 @@ private struct FormatCategory: Identifiable {
                 icon: "archivebox.fill",
                 color: .indigo,
                 providerIDs: ["com.previewx.archive"],
-                sampleExtensions: ["zip", "tar", "gz", "tgz", "7z", "gzip"]
+                sampleExtensions: [
+                    "zip", "tar", "gz", "tgz", "tar.gz", "7z", "gzip",
+                    "jar", "war", "apk", "aar", "xz"
+                ]
             ),
             FormatCategory(
                 id: "documents",
@@ -420,7 +485,12 @@ private struct FormatCategory: Identifiable {
                 icon: "doc.plaintext.fill",
                 color: .teal,
                 providerIDs: ["com.previewx.markdown", "com.previewx.text", "com.previewx.log"],
-                sampleExtensions: ["md", "markdown", "mdown", "txt", "log", "out", "trace"]
+                sampleExtensions: [
+                    "md", "markdown", "mdown",
+                    "txt", "text",
+                    "log", "out", "trace",
+                    ".gitignore", ".editorconfig"
+                ]
             ),
             FormatCategory(
                 id: "database",
@@ -429,7 +499,10 @@ private struct FormatCategory: Identifiable {
                 icon: "cylinder.split.1x2.fill",
                 color: .purple,
                 providerIDs: ["com.previewx.sqlite", "com.previewx.binary"],
-                sampleExtensions: ["db", "sqlite", "sqlite3", "bin"]
+                sampleExtensions: [
+                    "db", "sqlite", "sqlite3",
+                    "bin", "wasm", "elf", "dylib", "so", "o", "a"
+                ]
             )
         ]
     }
@@ -438,7 +511,13 @@ private struct FormatCategory: Identifiable {
 private struct FormatCategoryRow: View {
     let category: FormatCategory
     @ObservedObject var model: PreviewWorkspaceModel
+    let searchText: String
     let isMatch: Bool
+    @State private var isExpanded = false
+
+    private var effectivelyExpanded: Bool {
+        isExpanded || !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
 
     var body: some View {
         if isMatch {
@@ -454,6 +533,9 @@ private struct FormatCategoryRow: View {
                         HStack {
                             Text(category.title)
                                 .font(.headline)
+                            Text("(\(category.sampleExtensions.count))")
+                                .font(.caption.monospacedDigit())
+                                .foregroundStyle(.secondary)
                             Spacer()
                             Toggle(
                                 "",
@@ -465,29 +547,89 @@ private struct FormatCategoryRow: View {
                             .labelsHidden()
                         }
 
-                        Text(category.description)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        ForEach(category.sampleExtensions, id: \.self) { ext in
-                            Text(".\(ext)")
-                                .font(.caption2.monospaced())
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.secondary.opacity(0.1), in: Capsule())
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(category.description)
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            Spacer()
+
+                            if searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+                                Button {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        isExpanded.toggle()
+                                    }
+                                } label: {
+                                    HStack(spacing: 3) {
+                                        Text(isExpanded ? model.settings.language.tr(.collapse) : model.settings.language.tr(.expandAll))
+                                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                            .font(.system(size: 9, weight: .bold))
+                                    }
+                                    .font(.caption2)
+                                    .foregroundStyle(category.color)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
                     }
                 }
-                .padding(.leading, 40)
+
+                if effectivelyExpanded {
+                    FlowLayout(spacing: 6) {
+                        ForEach(category.sampleExtensions, id: \.self) { ext in
+                            badgeView(for: ext)
+                        }
+                    }
+                    .padding(.leading, 40)
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
+                            ForEach(category.sampleExtensions, id: \.self) { ext in
+                                badgeView(for: ext)
+                            }
+                        }
+                    }
+                    .padding(.leading, 40)
+                }
             }
             .padding(.vertical, 6)
         }
+    }
+
+    private func badgeText(for ext: String) -> String {
+        if ext.hasPrefix(".") {
+            return ext
+        }
+        if ext == "Dockerfile" || ext == "Makefile" || ext == "CMakeLists.txt" || ext == "LICENSE" {
+            return ext
+        }
+        return ".\(ext)"
+    }
+
+    @ViewBuilder
+    private func badgeView(for ext: String) -> some View {
+        let text = badgeText(for: ext)
+        let trimmedQuery = searchText.trimmingCharacters(in: .whitespaces).lowercased()
+        let cleanQuery = trimmedQuery.hasPrefix(".") ? String(trimmedQuery.dropFirst()) : trimmedQuery
+        let isHighlighted = !trimmedQuery.isEmpty && (
+            ext.lowercased().contains(cleanQuery) ||
+            text.lowercased().contains(trimmedQuery)
+        )
+
+        Text(text)
+            .font(.caption2.monospaced())
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(
+                isHighlighted ? category.color.opacity(0.18) : Color.secondary.opacity(0.1),
+                in: Capsule()
+            )
+            .overlay(
+                Capsule()
+                    .strokeBorder(isHighlighted ? category.color.opacity(0.6) : Color.clear, lineWidth: 1)
+            )
+            .foregroundStyle(isHighlighted ? category.color : .secondary)
     }
 
     private var isCategoryEnabled: Bool {
