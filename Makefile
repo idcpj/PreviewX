@@ -2,7 +2,7 @@ SWIFT ?= swift
 XCODEBUILD ?= xcodebuild
 DERIVED_DATA ?= .build/xcode
 
-.PHONY: build test xcode-build lint preview providers install
+.PHONY: build test xcode-build archive lint preview providers install
 
 build:
 	$(SWIFT) build
@@ -12,6 +12,9 @@ test:
 
 xcode-build:
 	$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Debug -derivedDataPath $(DERIVED_DATA) DEVELOPMENT_TEAM=T3L8L27V37 build
+
+archive:
+	$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Release -derivedDataPath $(DERIVED_DATA) -archivePath $(DERIVED_DATA)/PreviewX.xcarchive archive
 
 install: xcode-build
 	pkill -9 -f PreviewXQuickLook || true
