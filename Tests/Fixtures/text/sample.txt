@@ -1,0 +1,2 @@
+PreviewX plain-text fixture
+Second line for search.

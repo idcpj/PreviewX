@@ -1,0 +1,14 @@
+diff --git a/Sources/PreviewXCore/PreviewModels.swift b/Sources/PreviewXCore/PreviewModels.swift
+index 1234567..89abcde 100644
+--- a/Sources/PreviewXCore/PreviewModels.swift
++++ b/Sources/PreviewXCore/PreviewModels.swift
+@@ -10,6 +10,7 @@ public struct PreviewDocument: Codable, Equatable, Sendable {
+     public let title: String
+     public let subtitle: String?
++    public let version: String?
+     public let blocks: [PreviewBlock]
+     public let metadata: [MetadataItem]
+@@ -25,4 +26,3 @@ public struct PreviewDocument: Codable, Equatable, Sendable {
+-    // Legacy deprecated field
+     public let warnings: [PreviewWarning]
+ }

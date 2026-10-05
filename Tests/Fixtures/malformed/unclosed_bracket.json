@@ -1,0 +1,5 @@
+{
+  "service": "previewx",
+  "nodes": [
+    {"id": 1, "name": "node-1"},
+    {"id": 2, "name": "node-2"}

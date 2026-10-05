@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: previewx-worker
+  labels:
+    app: previewx
+spec:
+  containers:
+    - name: worker
+      image: alpine:latest
+      command: ["sh", "-c", "echo PreviewX worker running"]

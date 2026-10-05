@@ -1,0 +1,5 @@
+{
+  "service": "previewx",
+  "enabled": true,
+  "ports": [8080, 8443]
+}

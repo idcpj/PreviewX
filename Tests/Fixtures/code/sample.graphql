@@ -1,0 +1,10 @@
+type Query {
+  user(id: ID!): User
+  previews(limit: Int = 10): [PreviewDocument!]!
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String
+}

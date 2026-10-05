@@ -1,0 +1,5 @@
+service:
+  name: previewx
+  ports:
+    - 8080
+    - 8443

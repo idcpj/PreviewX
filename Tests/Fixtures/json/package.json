@@ -1,0 +1,13 @@
+{
+  "name": "previewx-app",
+  "version": "1.0.0",
+  "description": "Quick Look preview enhancement platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "swift test",
+    "build": "make build"
+  },
+  "keywords": ["macos", "quicklook", "swift"],
+  "author": "PreviewX Contributors",
+  "license": "MIT"
+}

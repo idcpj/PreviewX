@@ -1,0 +1,4 @@
+service:
+  name: previewx
+ port: 8080
+    workers: 4

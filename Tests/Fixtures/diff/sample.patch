@@ -1,0 +1,24 @@
+From 4b825dc642cb6eb9a060e54bf8d69288fbee4904 Mon Sep 17 00:00:00 2001
+From: PreviewX Team <dev@previewx.app>
+Date: Sun, 4 Oct 2026 14:00:00 +0800
+Subject: [PATCH] Add syntax highlighting for unified diff files
+
+---
+ Sources/PreviewXCore/SyntaxHighlighting.swift | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Sources/PreviewXCore/SyntaxHighlighting.swift b/Sources/PreviewXCore/SyntaxHighlighting.swift
+index a1b2c3d..e4f5a6b 100644
+--- a/Sources/PreviewXCore/SyntaxHighlighting.swift
++++ b/Sources/PreviewXCore/SyntaxHighlighting.swift
+@@ -40,6 +40,12 @@ public enum SyntaxHighlighter {
+     public static func tokens(in line: String, language: String?) -> [SyntaxToken] {
++        let lang = (language ?? "").lowercased()
++        if lang == "diff" || lang == "patch" {
++            return tokenizeDiff(line)
++        }
+         let rules = LanguageRules.rules(for: language)
+         return tokenize(line, rules: rules)
+     }
+-- 
+2.39.3

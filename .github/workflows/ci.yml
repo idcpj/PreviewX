@@ -1,0 +1,19 @@
+name: PreviewX CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-and-build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate project metadata
+        run: plutil -lint App/Info.plist QuickLookExtension/Info.plist PreviewX.xcodeproj/project.pbxproj
+      - name: Run Swift tests
+        run: swift test
+      - name: Build app and Quick Look extension
+        run: >-
+          xcodebuild -project PreviewX.xcodeproj -scheme PreviewX -configuration Debug
+          -derivedDataPath .build/xcode CODE_SIGNING_ALLOWED=NO build

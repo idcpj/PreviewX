@@ -1,0 +1,22 @@
+// JSON5 Configuration Sample
+{
+  // Unquoted keys and single quotes
+  title: 'PreviewX Platform',
+  version: '1.0.0',
+  description: 'Quick Look for macOS Developers',
+
+  // Nested object with trailing comma
+  features: {
+    speed: 'Instant',
+    security: 'Local-only',
+    syntaxHighlight: true,
+  },
+
+  // Array with trailing comma
+  supportedArchives: [
+    'zip',
+    'tar',
+    'tgz',
+    '7z',
+  ],
+}

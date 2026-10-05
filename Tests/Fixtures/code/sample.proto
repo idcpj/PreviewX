@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package previewx;
+
+message DocumentRequest {
+  string file_path = 1;
+  int64 max_bytes = 2;
+}
+
+message DocumentResponse {
+  string title = 1;
+  string subtitle = 2;
+  repeated string blocks = 3;
+}
