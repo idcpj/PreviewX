@@ -11,7 +11,12 @@ test:
 	$(SWIFT) test
 
 xcode-build:
-	$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Debug -derivedDataPath $(DERIVED_DATA) DEVELOPMENT_TEAM=T3L8L27V37 build
+	@if [ -n "$$DEVELOPMENT_TEAM" ]; then \
+		$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Debug -derivedDataPath $(DERIVED_DATA) DEVELOPMENT_TEAM="$$DEVELOPMENT_TEAM" build; \
+	elif ! $(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Debug -derivedDataPath $(DERIVED_DATA) build; then \
+		echo "⚠️ 默认签名构建失败，正在尝试使用本地 Ad-Hoc 签名构建..."; \
+		$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Debug -derivedDataPath $(DERIVED_DATA) CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES build; \
+	fi
 
 archive:
 	$(XCODEBUILD) -project PreviewX.xcodeproj -scheme PreviewX -configuration Release -derivedDataPath $(DERIVED_DATA) -archivePath $(DERIVED_DATA)/PreviewX.xcarchive archive
@@ -23,7 +28,9 @@ install: xcode-build
 	cp -R $(DERIVED_DATA)/Build/Products/Debug/PreviewX.app /Applications/PreviewX.app
 	/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /Applications/PreviewX.app
 	pluginkit -a /Applications/PreviewX.app/Contents/PlugIns/PreviewXQuickLook.appex
+	pluginkit -e use -i com.idcpj.previewx.quicklook || true
 	qlmanage -r && qlmanage -r cache
+	@echo "✅ PreviewX 已成功安装到 /Applications 并注册 Quick Look 扩展！"
 
 lint:
 	plutil -lint App/Info.plist QuickLookExtension/Info.plist PreviewX.xcodeproj/project.pbxproj
