@@ -16,6 +16,7 @@
 - **SKU**: `PREVIEWX_MAC_01`（或自定义唯一字符串）
 - **版本号 (Version)**: `1.0.0`
 - **版权声明 (Copyright)**: `2026 idcpj`
+- **App Store 图标 (1024x1024，无Alpha通道)**: 已生成于 `App/AppStoreIcon_1024.png`，可直接拖拽上传
 
 ### 2. 类别与分级
 - **主要类别 (Primary Category)**: `开发者工具 (Developer Tools)`
@@ -136,3 +137,35 @@ Thank you!
    - 在 Organizer 中点击右侧 **Validate App** 按钮；
    - 预检通过后，点击 **Distribute App** -> 选择 **App Store Connect** -> **Upload**；
    - 上传成功后，在 App Store Connect 后台等待约 5~15 分钟处理完成，即可在“构建版本”中选择该版本并正式提交审核。
+
+---
+
+## 六、屏幕截图准备指南 (Screenshots Guide)
+
+App Store 强制要求至少提供 1 张 macOS 屏幕截图（建议提供 3~5 张以体现核心卖点）：
+
+### 1. 尺寸规范 (选择其一)
+- **推荐尺寸 (Retina 16:10)**: `2880 x 1800` 像素
+- **标准尺寸**: `1440 x 900` 像素
+- 格式：PNG（RGB，无透明度）
+
+### 2. 推荐截取场景与对应文件
+1. **主打图 1：代码极速预览与高亮**
+   - 演示文件：`mock/code/sample.swift` 或 `sample.ts`
+   - 展示重点：行号、多色词法高亮、顶部元数据卡片（代码行数、大小、编码）。
+2. **主打图 2：结构化数据与大纲树**
+   - 演示文件：`mock/structured/valid.json` 或 `sample.yaml`
+   - 展示重点：JSON 格式化折叠树、大纲层级、格式美化。
+3. **主打图 3：压缩包免解压大纲**
+   - 演示文件：`Tests/Fixtures/archives/sample.tar` 或 `sample.zip`
+   - 展示重点：目录树层级、文件类型图标、免解压即时查看。
+4. **主打图 4：现代 CSV / 表格解析**
+   - 演示文件：`Tests/Fixtures/csv/sample.csv`
+   - 展示重点：表格网格布局、自动列对齐、单元格清晰排版。
+5. **主打图 5：PreviewX 独立工作台**
+   - 启动独立桌面应用 `PreviewX.app`，展示格式开关与首选项设置。
+
+### 3. macOS 快速截图小技巧
+- 选中目标文件按下空格键唤出预览窗口后；
+- 按下快捷键 `Command + Shift + 4`，再按一次 `Space`（空格键）；
+- 鼠标指针变为相机图标，轻点预览窗口，即可获得带优雅系统阴影的纯净独立窗口截图！

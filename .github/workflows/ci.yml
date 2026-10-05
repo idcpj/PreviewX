@@ -2,18 +2,29 @@ name: PreviewX CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   test-and-build:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      - name: Validate project metadata
-        run: plutil -lint App/Info.plist QuickLookExtension/Info.plist PreviewX.xcodeproj/project.pbxproj
-      - name: Run Swift tests
+
+      - name: Validate Project Metadata and Entitlements
+        run: |
+          plutil -lint App/Info.plist QuickLookExtension/Info.plist App/PreviewX.entitlements QuickLookExtension/PreviewXQuickLook.entitlements PreviewX.xcodeproj/project.pbxproj
+
+      - name: Run Swift Package Tests
         run: swift test
-      - name: Build app and Quick Look extension
+
+      - name: Build App & Extension (Debug)
         run: >-
           xcodebuild -project PreviewX.xcodeproj -scheme PreviewX -configuration Debug
+          -derivedDataPath .build/xcode CODE_SIGNING_ALLOWED=NO build
+
+      - name: Build App & Extension (Release)
+        run: >-
+          xcodebuild -project PreviewX.xcodeproj -scheme PreviewX -configuration Release
           -derivedDataPath .build/xcode CODE_SIGNING_ALLOWED=NO build
