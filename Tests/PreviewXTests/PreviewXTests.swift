@@ -422,6 +422,61 @@ final class PreviewXTests: XCTestCase {
         }
         XCTAssertEqual(document.subtitle, "PHP")
     }
+
+    func testFormatCategoryExpandedExtensionsAndSearch() {
+        let categories = FormatCategory.makeCategories(language: .simplifiedChinese)
+        XCTAssertEqual(categories.count, 5)
+
+        let codeCat = categories.first(where: { $0.id == "code" })
+        XCTAssertNotNil(codeCat)
+        guard let code = codeCat else { return }
+        XCTAssertTrue(code.sampleExtensions.count >= 60, "Code category should contain 60+ extensions, got \(code.sampleExtensions.count)")
+        XCTAssertTrue(code.sampleExtensions.contains("vue"))
+        XCTAssertTrue(code.sampleExtensions.contains("svelte"))
+        XCTAssertTrue(code.sampleExtensions.contains("dart"))
+        XCTAssertTrue(code.sampleExtensions.contains("cs"))
+        XCTAssertTrue(code.sampleExtensions.contains("rb"))
+        XCTAssertTrue(code.sampleExtensions.contains("Dockerfile"))
+        XCTAssertTrue(code.sampleExtensions.contains("Makefile"))
+        XCTAssertTrue(code.sampleExtensions.contains("cmake"))
+        XCTAssertTrue(code.matches("vue"))
+        XCTAssertTrue(code.matches(".vue"))
+        XCTAssertTrue(code.matches("dockerfile"))
+
+        let structuredCat = categories.first(where: { $0.id == "structured" })
+        XCTAssertNotNil(structuredCat)
+        guard let structured = structuredCat else { return }
+        XCTAssertTrue(structured.sampleExtensions.contains("jsonc"))
+        XCTAssertTrue(structured.sampleExtensions.contains("geojson"))
+        XCTAssertTrue(structured.sampleExtensions.contains("svg"))
+        XCTAssertTrue(structured.sampleExtensions.contains("plist"))
+        XCTAssertTrue(structured.matches("plist"))
+        XCTAssertTrue(structured.matches(".svg"))
+
+        let archiveCat = categories.first(where: { $0.id == "archive" })
+        XCTAssertNotNil(archiveCat)
+        guard let archive = archiveCat else { return }
+        XCTAssertTrue(archive.sampleExtensions.contains("jar"))
+        XCTAssertTrue(archive.sampleExtensions.contains("apk"))
+        XCTAssertTrue(archive.sampleExtensions.contains("tar.gz"))
+        XCTAssertTrue(archive.matches("apk"))
+        XCTAssertTrue(archive.matches(".tar.gz"))
+
+        let docsCat = categories.first(where: { $0.id == "documents" })
+        XCTAssertNotNil(docsCat)
+        guard let docs = docsCat else { return }
+        XCTAssertTrue(docs.sampleExtensions.contains("text"))
+        XCTAssertTrue(docs.sampleExtensions.contains(".gitignore"))
+        XCTAssertTrue(docs.matches("gitignore"))
+
+        let dbCat = categories.first(where: { $0.id == "database" })
+        XCTAssertNotNil(dbCat)
+        guard let db = dbCat else { return }
+        XCTAssertTrue(db.sampleExtensions.contains("wasm"))
+        XCTAssertTrue(db.sampleExtensions.contains("dylib"))
+        XCTAssertTrue(db.matches("wasm"))
+        XCTAssertTrue(db.matches(".dylib"))
+    }
 }
 
 private struct SlowProvider: PreviewProvider {
