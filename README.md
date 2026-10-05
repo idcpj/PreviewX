@@ -26,6 +26,18 @@
 
 ---
 
+## 📸 界面预览
+
+| 数据库多表与数据表格展示 | 压缩包免解压目录树 |
+|:---:|:---:|
+| ![SQLite 数据库预览](docs/imags/quicklook-sqlite-database-table.png) | ![JAR 归档目录树预览](docs/imags/quicklook-archive-tree-jar.png) |
+
+| Git 代码差异高亮 (Diff) | 格式支持与偏好设置 |
+|:---:|:---:|
+| ![代码差异高亮](docs/imags/quicklook-diff-patch-highlight.png) | ![格式与扩展管理](docs/imags/app-settings-supported-formats.png) |
+
+---
+
 ## 🖥️ 支持格式一览
 
 | 分类 | 支持格式 / 扩展名 |
