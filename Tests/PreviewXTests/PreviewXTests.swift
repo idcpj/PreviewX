@@ -424,7 +424,7 @@ final class PreviewXTests: XCTestCase {
     }
 
     func testFormatCategoryExpandedExtensionsAndSearch() {
-        let categories = FormatCategory.makeCategories(language: .simplifiedChinese)
+        let categories = FormatCategory.makeCategories(language: .zhHans)
         XCTAssertEqual(categories.count, 5)
 
         let codeCat = categories.first(where: { $0.id == "code" })
