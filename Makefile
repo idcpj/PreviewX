@@ -1,6 +1,7 @@
-SWIFT ?= swift
-XCODEBUILD ?= xcodebuild
+SWIFT ?= xcrun swift
+XCODEBUILD ?= xcrun xcodebuild
 DERIVED_DATA ?= .build/xcode
+export DEVELOPER_DIR ?= /Applications/Xcode.app/Contents/Developer
 
 DEVELOPMENT_TEAM ?= WAVU44HS32
 

@@ -79,6 +79,59 @@
   • 敏感信息告警：本地轻量检测 API Key、Token 与私钥风险并在界面显著预警，绝不外发。
   ```
 
+### 英文版 (English - U.S.)
+
+- **应用名称 (Name, 30字符限制)**:
+  ```text
+  PreviewX - Code & Data Preview
+  ```
+
+- **副标题 (Subtitle, 30字符限制，对应 Guideline 2.3 必须使用英文)**:
+  ```text
+  Developer Quick Look Preview
+  ```
+  *(备选: `Quick Look for Developers` 或 `Code & Data Quick Look`)*
+
+- **促销文本 (Promotional Text, 170字符限制)**:
+  ```text
+  Instant Quick Look preview for source code, JSON, YAML, Markdown, and archives without opening heavy IDEs. 100% local, fast, and secure.
+  ```
+
+- **关键词 (Keywords, 100字符限制，英文逗号分隔)**:
+  ```text
+  Quick Look,developer,syntax highlighting,code preview,JSON,YAML,Markdown,archive,CSV,SQLite
+  ```
+
+- **描述 (Description)**:
+  ```text
+  PreviewX is a modern Quick Look extension and developer file workbench built specifically for macOS.
+
+  [Preview First, Open Later]
+  Tired of launching heavy IDEs just to inspect a snippet of code or check configuration values? With PreviewX, simply press the Spacebar on any supported file in Finder to view instant, beautifully formatted syntax and data hierarchy.
+
+  [Key Capabilities]
+  1. Rich Syntax Highlighting:
+     Native syntax coloring for 30+ languages and formats, including Swift, TypeScript, JavaScript, Python, Rust, Go, C/C++, Java, Kotlin, PHP, Shell, SQL, HTML/CSS, Dockerfile, Vue, Svelte, and more.
+
+  2. Modern Structured Data & Tables:
+     Automatic parsing and indentation for JSON, JSON5, YAML, TOML, and XML with collapsible tree outlines. Native grid rendering and column alignment for CSV and TSV spreadsheets.
+
+  3. Safe Archive Inspection:
+     Inspect ZIP, TAR, GZ, and 7-Zip archives instantly without extraction. Stream directory structures while protecting against malicious path traversal attacks.
+
+  4. Logs & Database Metadata:
+     Smooth paginated inspection for large system and application logs, along with SQLite database header and schema cards.
+
+  5. Standalone Companion App:
+     Includes a lightweight desktop workbench to customize format preferences, test files, and inspect diagnostics.
+
+  [Privacy by Default]
+  • 100% Local-First: All parsing happens entirely on-device with zero network requests or analytics trackers.
+  • Strictly Read-Only: Files are never modified or written to disk.
+  • Zero Code Execution: Files are analyzed as data only; scripts are never executed.
+  • Secret & Token Detection: Sensitive API keys, tokens, and private keys are flagged with warnings and never exposed.
+  ```
+
 ---
 
 ## 三、App Store 隐私问卷填写指引 (Privacy Nutrition Labels)
