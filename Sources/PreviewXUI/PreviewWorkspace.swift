@@ -82,6 +82,13 @@ public final class PreviewWorkspaceModel: ObservableObject {
         }
     }
 
+    public func previewSample(name: String, content: String) {
+        let tempDir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        let fileURL = tempDir.appendingPathComponent(name)
+        try? content.write(to: fileURL, atomically: true, encoding: .utf8)
+        preview(url: fileURL)
+    }
+
     public func previewImmediately(url: URL) async {
         previewTask?.cancel()
         beginPreview(url: url)
@@ -189,7 +196,7 @@ public final class PreviewWorkspaceModel: ObservableObject {
 
 public struct PreviewWorkspaceView: View {
     @ObservedObject private var model: PreviewWorkspaceModel
-    @State private var section: WorkspaceSection = .formats
+    @State private var section: WorkspaceSection = .preview
 
     public init(model: PreviewWorkspaceModel) {
         self.model = model
@@ -198,11 +205,12 @@ public struct PreviewWorkspaceView: View {
     public var body: some View {
         NavigationSplitView {
             List(selection: $section) {
-                if let currentURL = model.currentURL {
-                    Section(model.settings.language.tr(.currentFile)) {
-                        NavigationLink(value: WorkspaceSection.preview) {
-                            Label(currentURL.lastPathComponent, systemImage: "doc.text.magnifyingglass")
-                        }
+                Section(model.settings.language.tr(.currentFile)) {
+                    NavigationLink(value: WorkspaceSection.preview) {
+                        Label(
+                            model.currentURL?.lastPathComponent ?? (model.settings.language.isChinese ? "工作台与预览" : "Workbench & Preview"),
+                            systemImage: "doc.text.magnifyingglass"
+                        )
                     }
                 }
 
@@ -223,6 +231,9 @@ public struct PreviewWorkspaceView: View {
         .environment(\.locale, model.settings.language.locale)
         .preferredColorScheme(model.settings.appearance.colorScheme)
         .task { await model.bootstrap() }
+        .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+            model.handleDroppedFiles(providers)
+        }
         .onChange(of: model.settings.appearance) { _, _ in
             model.applyAppearance()
         }
@@ -267,7 +278,7 @@ private struct DropzoneWorkbenchView: View {
     @ObservedObject var model: PreviewWorkspaceModel
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             Spacer()
 
             ZStack {
@@ -302,17 +313,90 @@ private struct DropzoneWorkbenchView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.regular)
 
+            VStack(spacing: 8) {
+                Text(model.settings.language.isChinese ? "快速体验示例：" : "Quick Sample Previews:")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 8) {
+                    SampleButton(title: "Swift", icon: "chevron.left.forwardslash.chevron.right") {
+                        model.previewSample(
+                            name: "sample.swift",
+                            content: "import Foundation\n\n// PreviewX Native Swift Highlighting\nstruct Developer {\n    let name: String\n    let lovesQuickLook: Bool\n}\n\nlet dev = Developer(name: \"macOS Developer\", lovesQuickLook: true)\nprint(\"Ready for instant Spacebar preview!\")\n"
+                        )
+                    }
+                    SampleButton(title: "JSON", icon: "curlybraces") {
+                        model.previewSample(
+                            name: "config.json",
+                            content: "{\n  \"app\": \"PreviewX\",\n  \"features\": [\n    \"Syntax Highlighting\",\n    \"Collapsible Outlines\",\n    \"Zero Dependencies\"\n  ],\n  \"sandboxed\": true,\n  \"localOnly\": true\n}\n"
+                        )
+                    }
+                    SampleButton(title: "Markdown", icon: "doc.text") {
+                        model.previewSample(
+                            name: "README.md",
+                            content: "# PreviewX\n\nInstant Quick Look preview for **macOS developers**.\n\n- Pure Swift 6 & AppKit/SwiftUI\n- 0 External Dependencies\n- Local-First & Strictly Read-Only\n"
+                        )
+                    }
+                }
+            }
+            .padding(.top, 4)
+
             HStack(spacing: 12) {
                 FeatureBadge(icon: "lock.shield", text: model.settings.language.tr(.featureLocalOnly))
                 FeatureBadge(icon: "bolt.fill", text: model.settings.language.tr(.featureZeroDep))
                 FeatureBadge(icon: "eye.slash", text: model.settings.language.tr(.featureSafe))
             }
-            .padding(.top, 8)
+            .padding(.top, 4)
+
+            VStack(spacing: 6) {
+                HStack(spacing: 6) {
+                    Image(systemName: "keyboard")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text(model.settings.language.isChinese ? "提示：在访达（Finder）中选中任意代码或数据文件，轻按空格键即可即时预览" : "Tip: Select any code or data file in Finder and press Spacebar to preview")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+
+                Button(action: {
+                    if let url = URL(string: "x-apple.systempreferences:com.apple.LoginItems-Settings.extension") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }) {
+                    Text(model.settings.language.isChinese ? "系统设置: 快速查看扩展" : "System Settings: Quick Look Extensions")
+                        .font(.caption2)
+                        .underline()
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.top, 6)
 
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(32)
+    }
+}
+
+private struct SampleButton: View {
+    let title: String
+    let icon: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 5) {
+                Image(systemName: icon)
+                    .font(.caption)
+                Text(title)
+                    .font(.caption.weight(.medium))
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(RoundedRectangle(cornerRadius: 6).fill(Color.accentColor.opacity(0.12)))
+        }
+        .buttonStyle(.plain)
     }
 }
 

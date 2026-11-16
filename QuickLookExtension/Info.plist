@@ -89,7 +89,6 @@
 				<string>public.plain-text</string>
 				<string>public.text</string>
 				<string>public.data</string>
-				<string>public.item</string>
 			</array>
 			<key>QLSupportsSearchableItems</key>
 			<false/>

@@ -811,8 +811,12 @@ private enum ArchiveInspector {
                 isUnsafe: ArchivePath.isUnsafe(fullName) || kind == "Symlink",
                 modifiedAt: modifiedAt
             ))
+            guard size <= UInt64(Int.max - 512) else {
+                warnings.append(.init(kind: .malformed, message: "TAR entry size overflows safe preview bounds."))
+                break
+            }
             let paddedSize = ((size + 511) / 512) * 512
-            guard paddedSize <= UInt64(Int.max), offset <= Int.max - 512 - Int(paddedSize) else {
+            guard offset <= Int.max - 512 - Int(paddedSize) else {
                 warnings.append(.init(kind: .malformed, message: "TAR entry size overflows safe preview bounds."))
                 break
             }

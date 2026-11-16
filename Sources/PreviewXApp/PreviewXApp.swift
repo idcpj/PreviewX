@@ -47,6 +47,14 @@ struct PreviewXApp: App {
                 }
         }
         .defaultSize(width: 1100, height: 720)
+        .commands {
+            CommandGroup(replacing: .newItem) {
+                Button(workspace.settings.language.isChinese ? "打开文件..." : "Open File...") {
+                    workspace.openPanel()
+                }
+                .keyboardShortcut("o", modifiers: .command)
+            }
+        }
     }
 
     private func previewInitialFileIfPresent() {
